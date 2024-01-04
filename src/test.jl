@@ -9,7 +9,7 @@ include("indexing.jl")
 include("../test/test_blockarrays2d.jl")
 
 
-w = ScalarWrapper(2)
+w = Ref(2)
 
 nb = 3
 n = 10

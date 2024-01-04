@@ -9,7 +9,7 @@ struct RawBlockSparse{T <: Real}
     row_idxs::Vector{Int}
     col_idxs::Vector{Int}
 
-    next_index::ScalarWrapper{Int} # next index to be filled
+    next_index::Ref{Int} # next index to be filled
 end
 
 
@@ -38,7 +38,7 @@ function RawBlockSparse(row::Vector{Int}, col::Vector{Int},
 
     n_blocks = (n_blocks_row,n_blocks_col)
 
-    RawBlockSparse{T}(m,n,row,col,vals,n_blocks,row_idxs,col_idxs,ScalarWrapper(next_index))
+    RawBlockSparse{T}(m,n,row,col,vals,n_blocks,row_idxs,col_idxs,Ref(next_index))
 end
 
 function RawBlockSparse(::Type{T},nnz::Int, m::Int, 
@@ -66,7 +66,10 @@ RawBlockSparse(nnz::Int,m::Int,n_blocks::Int) = RawBlockSparse(nnz,m,m,n_blocks,
 ###################################################################################################
 # Base operations overloaded for RawBlockSparse
 ###################################################################################################
-(raw::RawBlockSparse)() = sparse(raw.row,raw.col,raw.vals,raw.m * raw.n_blocks[1],raw.n * raw.n_blocks[2])
+function (raw::RawBlockSparse)() 
+    @assert raw.next_index[] == length(raw.row) + 1 "RawBlockSparse is not full"
+    sparse(raw.row,raw.col,raw.vals,raw.m * raw.n_blocks[1],raw.n * raw.n_blocks[2])
+end
 
 function Base.:*(α::T, A::RawBlockSparse{T}) where T <: Real
     new_valss = α .* A.vals  # Multiply each element in the vals vector by the scalar α

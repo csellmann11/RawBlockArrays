@@ -1,4 +1,4 @@
-struct RawBlockSparse{T <: Real} 
+struct RawBlockSparse{T <: Real}
     m::Int
     n::Int
     row::Vector{Int}
@@ -137,7 +137,7 @@ LL = RawBlockSparse(L,n)
 
 """
 
-function RawBlockSparse(A::Array{Union{RawBlockSparse{T},Int}},m::Int) where T <: Real
+function RawBlockSparse(A::Array{Union{Int,RawBlockSparse{T}}},m::Int) where T <: Real
     
     @assert size(A,1) == size(A,2) "A must be square"
     nnz = 0
@@ -195,7 +195,7 @@ Generate a random `RawBlockSparse` matrix with specified dimensions and sparsity
 - `RawBlockSparse`: A randomly generated `RawBlockSparse` matrix.
 
 """
-function rand(m::Int, n::Int, nnz_perc::Float64, n_blocks_row::Int, n_blocks_col::Int)
+function Base.rand(m::Int, n::Int, nnz_perc::Float64, n_blocks_row::Int, n_blocks_col::Int)
 
     n_rows = m * n_blocks_row  
     n_cols = n * n_blocks_col
@@ -213,4 +213,4 @@ function rand(m::Int, n::Int, nnz_perc::Float64, n_blocks_row::Int, n_blocks_col
 end
 
 ### creates a square block sparse matrix with random valsues
-rand(m,nnz_perc,n_blocks) = rand(m,m,nnz_perc,n_blocks,n_blocks)
+Base.rand(m,nnz_perc,n_blocks) = Base.rand(m,m,nnz_perc,n_blocks,n_blocks)

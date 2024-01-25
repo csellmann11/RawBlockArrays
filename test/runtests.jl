@@ -1,4 +1,4 @@
-using Test
+using Test, SparseArrays
 
 include("../src/RawBlockArrays.jl")
 using .RawBlockArrays

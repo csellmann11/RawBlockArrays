@@ -88,13 +88,19 @@ function test_matrix_construction()
     # create a random block raw sparse
     n_blocks = 2
     n = 3
-    R = RawBlockArrays.rand(n,0.1,n_blocks)
+    R = rand(n,0.1,n_blocks)
 
     RR::Matrix{Union{RawBlockSparse{Float64},Int}} = [R 1;0 R]
 
     check_vals_vec = [R.vals; ones(n*n_blocks); R.vals]
 
     @test check_vals_vec == RawBlockSparse(RR, n*n_blocks).vals
+
+    # create a random block raw sparse
+    n_blocks = 2
+    n = 3
+    R = rand(n,0.1,n_blocks)
+    display(R())
 end
 
 # Add more tests as needed
